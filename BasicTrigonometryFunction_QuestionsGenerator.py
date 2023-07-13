@@ -14,15 +14,25 @@ shifting = [0,0,0,0,0,0,-360,-270,-180,-90,90,180,270] #angles to be added to an
 syntax_for_sqrt = ['root','rt','sq','sqr','sqt','root','√','square','squareroot','square root','รูท','ราก','รูต','รูด','รากที่สอง','รากที่สองของ']
 
 #define responses for different situation
-correct_response = "  YES, YOU'RE RIGHT!\n"
-wrong_response = "  INCORRECT, TRY AGAIN.\n  (please answer in number with decimals or 'inf' or 'unidentified' or empty set or fraction form)\n"
-typeError_response = "  YOU TYPED SOMETHING WRONG!\n"
-skip_response = "FINE, LET SKIP.\n"
+correct_response = "  YES, YOU'RE RIGHT! (+1 score)"
+wrong_response = "  INCORRECT, TRY AGAIN. (-1 score)\n  (please answer in number with decimals or 'inf' or 'unidentified' or empty set or fraction form)"
+typeError_response = "  YOU TYPED SOMETHING WRONG! (0 score)"
+skip_response = "  FINE, LET SKIP. (-1 score)\n"
+
+score = 0 #define variable to contain score for every correct answer and decrease every wrong answer
+
+def printScore(): #just printing the score
+    global score #use the same 'score' variable from the global space
+    print(Fore.LIGHTYELLOW_EX + f"  Your current score is : {score}\n")
 
 def skip(): #player skips the question
+    global score #use the same 'score' variable from the global space
     print(Fore.WHITE + skip_response)
+    score -= 1
+    printScore()
 
 def submit(text): #player answers the question
+    global score #use the same 'score' variable from the global space
     if text.lower() == 'skip' or text.lower() == 'sk' or text.lower() == 'skp': #allow to use various expressions for skipping
         skip()
     elif text.lower() == 'exit' or text.lower() == 'stop' or text.lower() == 'end': #allow to use various expressions exiting
@@ -36,16 +46,30 @@ def submit(text): #player answers the question
             #allow to use various answers to answer this question
             if text.lower() == ans or text.lower() == 'infinity' or text.lower() == 'อนันต์' or text.lower() == '∞' or text.lower() == 'unidentified' or text.lower() == 'หาค่าไม่ได้' or text.lower() == 'non' or text.lower() == 'nan' or text.lower() == 'non' or text.lower() == '∅' or text.lower() == 'null' or text.lower() == '-' or text.lower() == '{}' or text.lower() == 'huge':
                 print(Fore.LIGHTGREEN_EX + correct_response) #correct answer
-            else:
-                print(Fore.LIGHTRED_EX + wrong_response) #wrong answer
+                score += 1
+                printScore()
+            else: #check again to make sure. if the player answers the number, they are wrong, else, they typed something weird
+                try: #use 'try' to catch errors, so the program won't crash or stop
+                    eval(text) #just checking if it can be calculate to a number
+                    print(Fore.LIGHTRED_EX + wrong_response) #wrong answer
+                    score -= 1
+                    printScore()
+                except: #catched the error (can't calculate in to a number)
+                    print(Fore.LIGHTYELLOW_EX + typeError_response)
+                    printScore()
         else:
             try: #use 'try' to catch errors, so the program won't crash or stop
                 if round(eval(text),1) == round(ans,1): #use only 1-digit decimals to compare the answer because 'ans' has to many decimals and could make too much different from what players answered
                     print(Fore.LIGHTGREEN_EX + correct_response) #correct answer
+                    score += 1
+                    printScore()
                 else:
                     print(Fore.LIGHTRED_EX + wrong_response) #wrong answer
+                    score -= 1
+                    printScore()
             except: #catched the error
-                print(Fore.LIGHTYELLOW_EX + typeError_response)
+                    print(Fore.LIGHTYELLOW_EX + typeError_response)
+                    printScore()
 
 while True: #main loop for the program to run until it exits
     chosen_ang = angles[randint(0,len(angles)-1)] #random angles from the list
