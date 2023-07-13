@@ -1,4 +1,4 @@
-#YOU CAN ADD EVEN MORE EXPRESsIONS, ANGLES, OR TRIGONOMETRY FUNCTIONS AS YOU DESIRED
+#YOU CAN ADD EVEN MORE EXPRESSIONS, ANGLES, OR TRIGONOMETRY FUNCTIONS AS YOU DESIRED
 
 from math import sin,cos,tan,sqrt,radians #import math library for calculation
 from random import randint #import randint to random the questions
